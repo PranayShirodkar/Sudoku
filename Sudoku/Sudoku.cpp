@@ -2,6 +2,7 @@
 
 Sudoku::Sudoku()
 {
+	//sudokuGrid = SudokuGenerator::GetPuzzle();
 	isValid = true;
 	fillCount = 0;
 }
@@ -56,7 +57,7 @@ void Sudoku::Init(void)
 			}
 		}
 	}
-	srand(time(NULL));
+	srand(int(time(NULL)));
 	while (fillCount < 17)
 	{
 		int r = rand() % 9;

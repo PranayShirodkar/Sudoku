@@ -1,8 +1,13 @@
 #pragma once
+
+// Library Includes
 #include <string>
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+
+// Includes
+#include "SudokuGenerator.hpp"
 
 const int NUM_OF_ROWS = 9;
 const int NUM_OF_COLUMNS = 9;
