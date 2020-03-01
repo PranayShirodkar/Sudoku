@@ -1,17 +1,10 @@
 #pragma once
 
 // Library Includes
-#include <string>
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include <vector>
 
-// Includes
-#include "SudokuGenerator.hpp"
-
-const int NUM_OF_ROWS = 9;
-const int NUM_OF_COLUMNS = 9;
+extern const int NUM_OF_ROWS;
+extern const int NUM_OF_COLUMNS;
 
 class Sudoku
 {
@@ -28,8 +21,6 @@ public:
 	void DelNumber(int r, int c);
 	
 private:
-	//int sudokuGrid[NUM_OF_ROWS][NUM_OF_COLUMNS] = { 0 };
-
 	std::vector<std::vector<int>> sudokuGrid = {
 												{7,8,0,4,0,0,1,2,0},
 												{6,0,0,0,7,5,0,0,9},

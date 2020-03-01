@@ -1,10 +1,23 @@
+// Library Includes
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+#include <vector>
+
+// Project Includes
 #include "Sudoku.hpp"
+#include "SudokuGenerator.hpp"
+
+// Constants
+const int NUM_OF_ROWS = 9;
+const int NUM_OF_COLUMNS = 9;
 
 Sudoku::Sudoku()
 {
-	//sudokuGrid = SudokuGenerator::GetPuzzle();
 	isValid = true;
 	fillCount = 0;
+	//Init();
 }
 
 Sudoku::~Sudoku()
@@ -47,6 +60,11 @@ void Sudoku::Print(void)
 
 void Sudoku::Init(void)
 {
+	// get random puzzle from generator
+	SudokuGenerator sudokuGenerator = SudokuGenerator();
+	sudokuGrid = sudokuGenerator.GetPuzzle();
+
+	// update fill count
 	for (int i = 0; i < NUM_OF_ROWS; i++)
 	{
 		for (int j = 0; j < NUM_OF_COLUMNS; j++)
@@ -57,17 +75,24 @@ void Sudoku::Init(void)
 			}
 		}
 	}
-	srand(int(time(NULL)));
-	while (fillCount < 17)
+
+	//update isValid
+	if (!GridCheck())
 	{
-		int r = rand() % 9;
-		int c = rand() % 9;
-		int val = 1 + (rand() % 9);
-		if (NumberCheck(r, c, val) && (sudokuGrid[r][c] == 0))
-		{
-			AddNumber(r, c, val);
-		}
+		isValid = false;
 	}
+
+	//srand(int(time(NULL)));
+	//while (fillCount < 17)
+	//{
+	//	int r = rand() % 9;
+	//	int c = rand() % 9;
+	//	int val = 1 + (rand() % 9);
+	//	if (NumberCheck(r, c, val) && (sudokuGrid[r][c] == 0))
+	//	{
+	//		AddNumber(r, c, val);
+	//	}
+	//}
 }
 
 bool Sudoku::Solve(int index)
