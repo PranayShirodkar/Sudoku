@@ -17,7 +17,7 @@ Sudoku::Sudoku()
 {
 	isValid = true;
 	fillCount = 0;
-	//Init();
+	Init();
 }
 
 Sudoku::~Sudoku()

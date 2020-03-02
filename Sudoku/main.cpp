@@ -6,10 +6,8 @@ int main(void)
 {
 	Sudoku sudokuGame = Sudoku();
 	sudokuGame.Print();
-	sudokuGame.Init();
+	sudokuGame.Solve(0);
 	sudokuGame.Print();
-	//sudokuGame.Solve(0);
-	//sudokuGame.Print();
 	//int a, b, c;
 	//std::cin >> a >> b >> c;
 

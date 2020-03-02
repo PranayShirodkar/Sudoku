@@ -10,6 +10,8 @@ public:
 	~SudokuGenerator();
 	std::vector<std::vector<int>> GetPuzzle();
 	void GenerateRandomGrid();
+	std::vector<int> GenerateRandomArray();
+	std::vector<int> GenerateRandomRowColArray();
 
 private:
 	std::vector<std::vector<int>> sudokuGrid =  {
