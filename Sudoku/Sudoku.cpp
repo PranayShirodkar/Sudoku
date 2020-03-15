@@ -17,45 +17,12 @@ Sudoku::Sudoku()
 {
 	isValid = true;
 	fillCount = 0;
+	sudokuGrid = std::vector<std::vector<int>>(9, std::vector<int>(9, 0));
 	Init();
 }
 
 Sudoku::~Sudoku()
 {
-}
-
-void Sudoku::Print(void)
-{
-	system("CLS");
-	for (int i = 0; i < NUM_OF_ROWS; i++)
-	{
-		for (int j = 0; j < NUM_OF_COLUMNS; j++)
-		{
-			if (sudokuGrid[i][j] == 0)
-			{
-				std::cout << " _ ";
-			}
-			else
-			{
-				std::cout << " " << sudokuGrid[i][j] << " ";
-			}
-			if (((j + 1) % 3 == 0) && ((j + 1) != NUM_OF_COLUMNS))
-			{
-				std::cout << "|";
-			}
-		}
-		std::cout << std::endl;
-		if (((i + 1) % 3 == 0) && ((i + 1) != NUM_OF_ROWS))
-		{
-			std::cout << (std::string("---") * 9) << "-" << std::endl;
-		}
-		else
-		{
-			std::cout << std::endl;
-		}
-	}
-	std::cout << "Grid is " << (isValid ? "valid" : "not valid") << std::endl;
-	std::cout << "FillCount is " << fillCount << std::endl;
 }
 
 void Sudoku::Init(void)
@@ -95,7 +62,41 @@ void Sudoku::Init(void)
 	//}
 }
 
-bool Sudoku::Solve(int index)
+void Sudoku::Print(void)
+{
+	system("CLS");
+	for (int i = 0; i < NUM_OF_ROWS; i++)
+	{
+		for (int j = 0; j < NUM_OF_COLUMNS; j++)
+		{
+			if (sudokuGrid[i][j] == 0)
+			{
+				std::cout << " _ ";
+			}
+			else
+			{
+				std::cout << " " << sudokuGrid[i][j] << " ";
+			}
+			if (((j + 1) % 3 == 0) && ((j + 1) != NUM_OF_COLUMNS))
+			{
+				std::cout << "|";
+			}
+		}
+		std::cout << std::endl;
+		if (((i + 1) % 3 == 0) && ((i + 1) != NUM_OF_ROWS))
+		{
+			std::cout << (std::string("---") * 9) << "-" << std::endl;
+		}
+		else
+		{
+			std::cout << std::endl;
+		}
+	}
+	std::cout << "Grid is " << (isValid ? "valid" : "not valid") << std::endl;
+	std::cout << "FillCount is " << fillCount << std::endl;
+}
+
+bool Sudoku::Solve()
 {
 	int emptyRow;
 	int emptyCol;
@@ -108,15 +109,35 @@ bool Sudoku::Solve(int index)
 	{
 		if (AddNumber(emptyRow, emptyCol, i + 1))
 		{
-			if (Solve(0))
+			if (Solve())
 			{
 				return true;
 			}
 		}
 		DelNumber(emptyRow, emptyCol);
 	}
-
 	return false;
+}
+
+int Sudoku::GetNumOfSolns()
+{
+	int emptyRow;
+	int emptyCol;
+	if (!FindEmpty(emptyRow, emptyCol))
+	{
+		return 1;
+	}
+
+	int sum = 0;
+	for (int i = 0; i < 9; i++)
+	{
+		if (AddNumber(emptyRow, emptyCol, i + 1))
+		{
+			sum += GetNumOfSolns();
+		}
+		DelNumber(emptyRow, emptyCol);
+	}
+	return sum;
 }
 
 bool Sudoku::FindEmpty(int &r, int &c)

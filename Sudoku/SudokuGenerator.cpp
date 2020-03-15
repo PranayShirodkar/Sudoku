@@ -24,11 +24,13 @@ std::vector<std::vector<int>> SudokuGenerator::GetPuzzle()
 
 void SudokuGenerator::GenerateRandomGrid()
 {
-	// Setup before Case 1
+	// Case 1: rearrange the columns
+	// Every 3 columns can be rearranged among themselves
+	// Every block of 3 columns can be rearranged among themselves
+	// This form of scrambling preserves sudoku solvability
 	std::vector<std::vector<int>> tempGrid(9, std::vector<int>(9, 0));
 	std::vector<int> randomArray = GenerateRandomRowColArray();
 
-	// Case 1: rearrange the columns
 	for (int i = 0; i < NUM_OF_ROWS; i++)
 	{
 		for (int j = 0; j < NUM_OF_COLUMNS; j++)
@@ -38,11 +40,13 @@ void SudokuGenerator::GenerateRandomGrid()
 	}
 	sudokuGrid = tempGrid;
 
-	// Setup before Case 2
+	// Case 2: rearrange the rows
+	// Every 3 rows can be rearranged among themselves
+	// Every block of 3 rows can be rearranged among themselves
+	// This form of scrambling preserves sudoku solvability
 	tempGrid = std::vector<std::vector<int>>(9, std::vector<int>(9, 0));
 	randomArray = GenerateRandomRowColArray();
 
-	// Case 2: rearrange the rows
 	for (int i = 0; i < NUM_OF_ROWS; i++)
 	{
 		for (int j = 0; j < NUM_OF_COLUMNS; j++)
@@ -52,12 +56,11 @@ void SudokuGenerator::GenerateRandomGrid()
 	}
 	sudokuGrid = tempGrid;
 
-	// Setup before Case 3
+	// Case 3: scramble the numbers such that all ones become threes, all threes become eights, etc.
+	// This form of scrambling preserves sudoku solvability
 	tempGrid = std::vector<std::vector<int>>(9, std::vector<int>(9, 0));
 	randomArray = GenerateRandomArray();
 
-	// Case 3: rearrange the numbers such that all ones become threes, all threes become sixes, etc.
-	// Do this randomly. This maintains the solvability of the sudoku while making it look new.
 	for (int i = 0; i < NUM_OF_ROWS; i++)
 	{
 		for (int j = 0; j < NUM_OF_COLUMNS; j++)
@@ -73,6 +76,7 @@ void SudokuGenerator::GenerateRandomGrid()
 
 std::vector<int> SudokuGenerator::GenerateRandomArray()
 {
+	// generate randomArray of 0-8 scrambled
 	std::vector<int> randomArray;
 	for (int x = 0; x < NUM_OF_COLUMNS; x++)
 	{
@@ -85,20 +89,23 @@ std::vector<int> SudokuGenerator::GenerateRandomArray()
 std::vector<int> SudokuGenerator::GenerateRandomRowColArray()
 {
 	// This method does the following:
-	// Every 3 rows can be rearranged among themselves
-	// Every block of 3 rows can be rearranged among themselves
-	// Same also works for columns
-	// This form of scrambling preserves sudoku solvability
-	// Example returned randomArray is 8,7,6,1,0,2,4,6,5
+	// tempArray = [[0,1,2],
+	//              [3,4,5],
+	//              [6,7,8]]
+	// shuffle the subarrays in tempArray
+	// shuffle the contents of each subarray in tempArray
+	// populate tempArray into randomArray, for example:
+	// 8,7,6,1,0,2,4,3,5  or  5,3,4,6,8,7,0,2,1
 	std::vector<int> randomArray;
 	std::vector<std::vector<int>> tempArray(3, std::vector<int>(3, 0));
 	std::vector<std::vector<int>>::iterator it;
 	int i = 0;
-	for (int x = 0; x < tempArray.size(); x++)
+	for (uint32_t x = 0; x < tempArray.size(); x++)
 	{
-		for (int y = 0; y < tempArray.size(); y++, i++)
+		for (uint32_t y = 0; y < tempArray.size(); y++)
 		{
 			tempArray[x][y] = i;
+			i++;
 		}
 	}
 
