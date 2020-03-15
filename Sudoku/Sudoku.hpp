@@ -2,6 +2,7 @@
 
 // Library Includes
 #include <vector>
+#include <stack>
 
 extern const int NUM_OF_ROWS;
 extern const int NUM_OF_COLUMNS;
@@ -19,11 +20,19 @@ public:
 	bool NumberCheck(int r, int c, int val);
 	bool GridCheck(void);
 	bool SetNumber(int r, int c, int val);
-	bool AddNumber(int r, int c, int val);
-	void DelNumber(int r, int c);
+	void AddCurrentStateToHistory();
+	bool UndoLastAction();
+	bool RedoLastUndo();
 	
 private:
+	// private methods
+	bool AddNumber(int r, int c, int val);
+	void DelNumber(int r, int c);
+
+	//private members
 	std::vector<std::vector<int>> sudokuGrid;
+	std::stack<std::vector<std::vector<int>>> sudokuGridStateHistory;
+	std::stack<std::vector<std::vector<int>>> undoActionHistory;
 	bool isValid;
 	int fillCount;
 

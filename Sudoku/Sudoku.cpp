@@ -4,6 +4,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
+#include <stack>
 
 // Project Includes
 #include "Sudoku.hpp"
@@ -48,6 +49,8 @@ void Sudoku::Init(void)
 	{
 		isValid = false;
 	}
+
+	AddCurrentStateToHistory();
 
 	//srand(int(time(NULL)));
 	//while (fillCount < 17)
@@ -230,13 +233,21 @@ bool Sudoku::GridCheck(void)
 
 bool Sudoku::SetNumber(int r, int c, int val)
 {
-	bool retval = false;
+	// out of bounds check
+	if ((val < 0) || (val > 9))
+	{
+		return false;
+	}
+	// already set, just return
 	if (sudokuGrid[r][c] == val)
 	{
-		// already set, just return
-		return retval;
+		return false;
 	}
-	else if ((sudokuGrid[r][c] == 0) && (val != 0))
+
+	bool retval = false;
+	AddCurrentStateToHistory();
+
+	if ((sudokuGrid[r][c] == 0) && (val != 0))
 	{
 		// new value being set, previously zero, now non-zero
 		retval = AddNumber(r, c, val);
@@ -285,6 +296,41 @@ void Sudoku::DelNumber(int r, int c)
 		isValid = true;
 	}
 	// else the gridCheck() failed so the grid remains invalid
+}
+
+void Sudoku::AddCurrentStateToHistory()
+{
+	sudokuGridStateHistory.push(sudokuGrid);
+}
+bool Sudoku::UndoLastAction()
+{
+	if (sudokuGridStateHistory.size() < 2)
+	{
+		return false;
+	}
+	else
+	{
+		undoActionHistory.push(sudokuGrid);
+		sudokuGrid = sudokuGridStateHistory.top();
+		sudokuGridStateHistory.pop();
+		Print();
+		return true;
+	}
+}
+bool Sudoku::RedoLastUndo()
+{
+	if (undoActionHistory.size() < 1)
+	{
+		return false;
+	}
+	else
+	{
+		sudokuGridStateHistory.push(sudokuGrid);
+		sudokuGrid = undoActionHistory.top();
+		undoActionHistory.pop();
+		Print();
+		return true;
+	}
 }
 
 std::string operator*(const std::string& s, size_t n) {
