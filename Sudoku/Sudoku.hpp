@@ -18,6 +18,7 @@ public:
 	bool FindEmpty(int &r, int &c);
 	bool NumberCheck(int r, int c, int val);
 	bool GridCheck(void);
+	bool SetNumber(int r, int c, int val);
 	bool AddNumber(int r, int c, int val);
 	void DelNumber(int r, int c);
 	

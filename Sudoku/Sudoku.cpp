@@ -107,15 +107,15 @@ bool Sudoku::Solve()
 
 	for (int i = 0; i < 9; i++)
 	{
-		if (AddNumber(emptyRow, emptyCol, i + 1))
+		if (SetNumber(emptyRow, emptyCol, i + 1))
 		{
 			if (Solve())
 			{
 				return true;
 			}
 		}
-		DelNumber(emptyRow, emptyCol);
 	}
+	SetNumber(emptyRow, emptyCol, 0);
 	return false;
 }
 
@@ -131,12 +131,12 @@ int Sudoku::GetNumOfSolns()
 	int sum = 0;
 	for (int i = 0; i < 9; i++)
 	{
-		if (AddNumber(emptyRow, emptyCol, i + 1))
+		if (SetNumber(emptyRow, emptyCol, i + 1))
 		{
 			sum += GetNumOfSolns();
 		}
-		DelNumber(emptyRow, emptyCol);
 	}
+	SetNumber(emptyRow, emptyCol, 0);
 	return sum;
 }
 
@@ -159,6 +159,12 @@ bool Sudoku::FindEmpty(int &r, int &c)
 
 bool Sudoku::NumberCheck(int r, int c, int val)
 {
+	// Case 0: value of 0 is always valid
+	if (val == 0)
+	{
+		return true;
+	}
+
 	// Case 1: found duplicate in that row
 	for (int x = 0; x < NUM_OF_COLUMNS; x++)
 	{
@@ -222,30 +228,49 @@ bool Sudoku::GridCheck(void)
 	return true;
 }
 
+bool Sudoku::SetNumber(int r, int c, int val)
+{
+	bool retval = false;
+	if (sudokuGrid[r][c] == val)
+	{
+		// already set, just return
+		return retval;
+	}
+	else if ((sudokuGrid[r][c] == 0) && (val != 0))
+	{
+		// new value being set, previously zero, now non-zero
+		retval = AddNumber(r, c, val);
+	}
+	else if ((sudokuGrid[r][c] != 0) && (val == 0))
+	{
+		// delete the current value, replace with zero
+		DelNumber(r, c);
+		retval = true;
+	}
+	else if ((sudokuGrid[r][c] != 0) && (val != 0))
+	{
+		// replace current value with a new value
+		DelNumber(r, c);
+		retval = AddNumber(r, c, val);
+	}
+	//Print();
+	return retval;
+}
+
 bool Sudoku::AddNumber(int r, int c, int val)
 {
-	if (sudokuGrid[r][c] == 0)
+	if (NumberCheck(r, c, val))
 	{
-		if (NumberCheck(r, c, val))
-		{
-			sudokuGrid[r][c] = val;
-			fillCount++;
-			//Print();
-			return true;
-		}
-		else
-		{
-			sudokuGrid[r][c] = val;
-			fillCount++;
-			isValid = false;
-			//Print();
-			return false;
-		}
+		sudokuGrid[r][c] = val;
+		fillCount++;
+		return true;
 	}
 	else
 	{
-		DelNumber(r, c);
-		return AddNumber(r, c, val);
+		sudokuGrid[r][c] = val;
+		fillCount++;
+		isValid = false;
+		return false;
 	}
 }
 
@@ -253,11 +278,13 @@ void Sudoku::DelNumber(int r, int c)
 {
 	sudokuGrid[r][c] = 0;
 	fillCount--;
+
+	// if the grid was not valid, evaluate if it is valid now
 	if ((!isValid) && GridCheck())
 	{
 		isValid = true;
-	} // else the gridCheck() failed so the grid remains invalid
-	//Print();
+	}
+	// else the gridCheck() failed so the grid remains invalid
 }
 
 std::string operator*(const std::string& s, size_t n) {
